@@ -3,10 +3,10 @@ const placesList = document.querySelector('.places__list');
 
 function addCard(link, description, deleteCardCallback) {
     const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
-    let cardImg = cardElement.querySelector('.card__image');
-    let cardDescription = cardElement.querySelector('.card__description');
-    let cardDescriptionTitle = cardDescription.querySelector('.card__title');
-    let deleteButton = cardElement.querySelector('.card__delete-button');
+    const cardImg = cardElement.querySelector('.card__image');
+    const cardDescription = cardElement.querySelector('.card__description');
+    const cardDescriptionTitle = cardDescription.querySelector('.card__title');
+    const deleteButton = cardElement.querySelector('.card__delete-button');
     cardImg.src = link;
     cardDescriptionTitle.textContent = description;
     deleteButton.addEventListener('click', () => deleteCardCallback(cardElement));
