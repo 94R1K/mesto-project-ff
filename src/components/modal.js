@@ -9,12 +9,13 @@ export function closeModal(popup) {
 }
 
 function handleEsc(event) {
-  const popups = document.querySelectorAll('.popup');
   if (event.key === 'Escape') {
-    popups.forEach(popup => {
-      if (popup.classList.contains('popup_is-opened')) {
-        closeModal(popup);
-      }
-    });
+    closeModal(document.querySelector('.popup_is-opened'));
+  }
+}
+
+export function closePopupByOverlay(event) {
+  if (event.target === event.currentTarget) {
+    closeModal(event.currentTarget);
   }
 }
