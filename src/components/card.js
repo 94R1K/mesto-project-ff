@@ -17,13 +17,9 @@ export function createCard(card, deleteCardCallback, likeCardCallback, openImage
   likeCount.textContent = card.likes.length;
   likeButton.addEventListener('click', () => likeCardCallback(likeButton, likeCount, card));
   if (!checkCard) {
-    deleteButton.style.display = 'none';
+    deleteButton.remove();
   } else {
-    deleteButton.addEventListener('click', () => {
-      deleteCardCallback(card._id)
-      .then(res => cardElement.remove())
-      .catch(err => console.error(err));
-    });
+    deleteButton.addEventListener('click', () => deleteCardCallback(cardElement, card));
   }
 
   if (checkLikeCard) {
