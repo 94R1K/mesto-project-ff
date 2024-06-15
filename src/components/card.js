@@ -1,4 +1,6 @@
-export function createCard(card, deleteCardCallback, likeCardCallback, openImagePopupCallback, checkCard) {
+import { likeCardApi, dislikeCard } from "./api";
+
+export function createCard(card, deleteCardCallback, likeCardCallback, openImagePopupCallback, checkCard, checkLikeCard) {
   const cardTemplate = document.getElementById('card-template').content;
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImg = cardElement.querySelector('.card__image');
@@ -13,7 +15,7 @@ export function createCard(card, deleteCardCallback, likeCardCallback, openImage
   cardImg.addEventListener('click', () => openImagePopupCallback(cardElement));
   cardDescriptionTitle.textContent = card.name;
   likeCount.textContent = card.likes.length;
-  likeButton.addEventListener('click', () => likeCardCallback(likeButton));
+  likeButton.addEventListener('click', () => likeCardCallback(likeButton, likeCount, card));
   if (!checkCard) {
     deleteButton.style.display = 'none';
   } else {
@@ -24,9 +26,29 @@ export function createCard(card, deleteCardCallback, likeCardCallback, openImage
     });
   }
 
+  if (checkLikeCard) {
+    likeButton.classList.add('card__like-button_is-active');
+  }
+
   return cardElement;
 }
 
-export function likeCard(likeButton) {
-  likeButton.classList.toggle('card__like-button_is-active');
+export function likeCard(likeButton, likeCount, card) {
+  if (!likeButton.classList.contains('card__like-button_is-active')) {
+    likeCardApi(card._id)
+     .then(res => {
+        likeButton.classList.add('card__like-button_is-active');
+        card.likes = res.likes;
+        likeCount.textContent = res.likes.length;
+      })
+     .catch(err => console.error(err));
+  } else {
+    dislikeCard(card._id)
+     .then(res => {
+        likeButton.classList.remove('card__like-button_is-active');
+        card.likes = res.likes;
+        likeCount.textContent = res.likes.length;
+      })
+     .catch(err => console.error(err));
+  }
 }

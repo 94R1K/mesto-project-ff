@@ -16,10 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
       descriptionProfile.textContent = userInfo.about;
       imageProfile.style.backgroundImage = `url(${userInfo.avatar})`;
 
-      let checkCard = false;
       cards.forEach(card => {
-        checkCard = userInfo._id === card.owner._id;
-        const cardElement = createCard(card, deleteCard, likeCard, openImagePopup, checkCard);
+        const checkCard = userInfo._id === card.owner._id;
+        const checkLikeCard = card.likes.some(like => like._id === userInfo._id);
+        const cardElement = createCard(card, deleteCard, likeCard, openImagePopup, checkCard, checkLikeCard);
         placesList.append(cardElement);
       });
     })

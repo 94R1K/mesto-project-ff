@@ -82,7 +82,7 @@ export const deleteCard = (cardId) => {
       });
 }
 
-export const likeCard = (cardId) => {
+export const likeCardApi = (cardId) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
       method: 'PUT',
       headers: config.headers
@@ -100,6 +100,23 @@ export const dislikeCard = (cardId) => {
     return fetch(`${config.baseUrl}/cards/likes/${cardId}`, {
       method: 'DELETE',
       headers: config.headers
+    })
+      .then(response => {
+        if (response.ok) {
+          return response.json();
+        }
+
+        return Promise.reject(`Ошибка: ${response.status}`);
+      });
+}
+
+export const changeAvatar = (avatarUrl) => {
+    return fetch(`${config.baseUrl}/users/me/avatar`, {
+      method: 'PATCH',
+      headers: config.headers,
+      body: JSON.stringify({
+        avatar: avatarUrl
+      })
     })
       .then(response => {
         if (response.ok) {
