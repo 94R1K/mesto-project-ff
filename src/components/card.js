@@ -1,4 +1,4 @@
-import { likeCardApi, dislikeCard } from "./api";
+import { likeCardApi, dislikeCard } from "./api.js";
 
 export function createCard(card, deleteCardCallback, likeCardCallback, openImagePopupCallback, checkCard, checkLikeCard) {
   const cardTemplate = document.getElementById('card-template').content;
