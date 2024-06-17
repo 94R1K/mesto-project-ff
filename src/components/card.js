@@ -12,10 +12,11 @@ export function createCard(card, deleteCardCallback, likeCardCallback, openImage
 
   cardImg.alt = `Изображение ${card.name}`;
   cardImg.src = card.link;
-  cardImg.addEventListener('click', () => openImagePopupCallback(cardElement));
+  cardImg.addEventListener('click', () => openImagePopupCallback(card.name, card.link));
   cardDescriptionTitle.textContent = card.name;
   likeCount.textContent = card.likes.length;
   likeButton.addEventListener('click', () => likeCardCallback(likeButton, likeCount, card));
+
   if (!checkCard) {
     deleteButton.remove();
   } else {
@@ -37,7 +38,7 @@ export function likeCard(likeButton, likeCount, card) {
         card.likes = res.likes;
         likeCount.textContent = res.likes.length;
       })
-     .catch(err => console.error(err));
+     .catch(console.error);
   } else {
     dislikeCard(card._id)
      .then(res => {
@@ -45,6 +46,6 @@ export function likeCard(likeButton, likeCount, card) {
         card.likes = res.likes;
         likeCount.textContent = res.likes.length;
       })
-     .catch(err => console.error(err));
+     .catch(console.error);
   }
 }

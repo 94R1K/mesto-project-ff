@@ -3,45 +3,13 @@ import { createCard, likeCard } from '../components/card.js';
 import { openModal, closeModal, closePopupByOverlay } from '../components/modal.js';
 import { enableValidation, clearValidation } from '../components/validation.js';
 import { getUserInfo, editProfile, getInitialCards, addCard, deleteCard, changeAvatar } from "../components/api.js";
-import { handleSubmit } from '../components/utils.js';
-
-const placesList = document.querySelector('.places__list');
-const popups = document.querySelectorAll('.popup');
-const popupEditCard = document.querySelector('.popup_type_edit');
-const popupNewCard = document.querySelector('.popup_type_new-card');
-const popupChangeAvatar = document.querySelector('.popup_change_avatar');
-const imageProfile = document.querySelector('.profile__image');
-const imagePopup = document.querySelector('.popup_type_image');
-const imagePopupImg = imagePopup.querySelector('.popup__image');
-const imagePopupTitle = imagePopup.querySelector('.popup__caption');
-const deletePopup = document.querySelector('.popup_delete_card');
-const deleteButton = deletePopup.querySelector('.popup__button');
-
-const profileAddButton = document.querySelector('.profile__add-button');
-const profileEditButton = document.querySelector('.profile__edit-button');
-
-const formEditElement = document.forms['edit-profile'];
-const nameInput = formEditElement.elements['name'];
-const jobInput = formEditElement.elements['description'];
-
-const nameProfile = document.querySelector('.profile__title');
-const descriptionProfile = document.querySelector('.profile__description');
-
-const formAddElement = document.forms['new-place'];
-const placeNameInput = formAddElement.elements['place-name'];
-const linkInput = formAddElement.elements['link'];
-
-const formAddAvatar = document.forms['new-avatar'];
-const linkAvatar = formAddAvatar.elements['link-avatar'];
-
-const validationSettings = {
-  formSelector: '.popup__form',
-  inputSelector: '.popup__input',
-  submitButtonSelector: '.popup__button',
-  inactiveButtonClass: 'popup__button_disabled',
-  inputErrorClass: 'popup__input_type_error',
-  errorClass: 'popup__error_visible'
-};
+import { handleSubmit } from '../utils/utils.js';
+import {
+  placesList, popups, popupEditCard, popupNewCard, popupChangeAvatar, imageProfile,
+  imagePopup, imagePopupImg, imagePopupTitle, profileAddButton,
+  profileEditButton, formEditElement, nameInput, jobInput, nameProfile, descriptionProfile,
+  formAddElement, placeNameInput, linkInput, formAddAvatar, linkAvatar, validationSettings
+} from '../utils/constants.js';
 
 document.addEventListener('DOMContentLoaded', () => {
   Promise.all([getUserInfo(), getInitialCards()])
@@ -57,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         placesList.append(cardElement);
       });
     })
-    .catch((err) => console.error(err));
+    .catch(console.error);
 
   popups.forEach(popup => {
     popup.addEventListener('click', closePopupByOverlay);
@@ -86,12 +54,10 @@ document.addEventListener('DOMContentLoaded', () => {
   enableValidation(validationSettings);
 });
 
-function openImagePopup(cardElement) {
-  const cardImg = cardElement.querySelector('.card__image');
-  const cardDescription = cardElement.querySelector('.card__description');
-  imagePopupImg.src = cardImg.src;
-  imagePopupImg.alt = `Изображение ${cardDescription.textContent}`;
-  imagePopupTitle.textContent = cardDescription.textContent;
+function openImagePopup(cardName, cardLink) {
+  imagePopupImg.src = cardLink;
+  imagePopupImg.alt = `Изображение ${cardName}`;
+  imagePopupTitle.textContent = cardName;
   openModal(imagePopup);
 }
 
@@ -117,7 +83,7 @@ function openDeletePopup(cardElement, card) {
         cardElement.remove();
         closeModal(deletePopup);
       })
-      .catch(err => console.error(err));
+      .catch(console.error);
   });
 }
 
@@ -131,9 +97,10 @@ function handleProfileFormSubmit(evt) {
     return editProfile(nameInput.value, jobInput.value).then((userData) => {
       nameProfile.textContent = userData.name;
       descriptionProfile.textContent = userData.about;
+      closeModal(popupEditCard);
     });
   }
-  handleSubmit(makeRequest, evt, "Сохранение...", () => closeModal(popupEditCard));
+  handleSubmit(makeRequest, evt, "Сохранение...",);
 }
 
 formEditElement.addEventListener('submit', handleProfileFormSubmit);
@@ -143,9 +110,10 @@ function handleAddCardSubmit(evt) {
     return addCard(placeNameInput.value, linkInput.value).then((card) => {
       const newCardElement = createCard(card, openDeletePopup, likeCard, openImagePopup, true, false);
       placesList.prepend(newCardElement);
+      closeModal(popupNewCard);
     });
   }
-  handleSubmit(makeRequest, evt, "Сохранение...", () => closeModal(popupNewCard));
+  handleSubmit(makeRequest, evt, "Сохранение...",);
 }
 
 formAddElement.addEventListener('submit', handleAddCardSubmit);
@@ -154,9 +122,10 @@ function handleAddAvatarSubmit(evt) {
   function makeRequest() {
     return changeAvatar(linkAvatar.value).then(() => {
       imageProfile.style.backgroundImage = `url(${linkAvatar.value})`;
+      closeModal(popupChangeAvatar);
     });
   }
-  handleSubmit(makeRequest, evt, "Сохранение...", () => closeModal(popupChangeAvatar));
+  handleSubmit(makeRequest, evt, "Сохранение...",);
 }
 
 formAddAvatar.addEventListener('submit', handleAddAvatarSubmit);
